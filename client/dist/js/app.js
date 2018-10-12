@@ -24859,9 +24859,6 @@ var ClassList = function (_React$Component) {
         _this.setState({
           students: response.data
         });
-        console.log(_this.state);
-        // this.props.getStudents(response.data)
-        // this.setState({id: e.target.value});
       }).catch(function (error) {
         console.log('Error fetching and parsing data', error);
       });
@@ -27915,6 +27912,14 @@ var _react = __webpack_require__(6);
 
 var _react2 = _interopRequireDefault(_react);
 
+var _GetStudentInfo = __webpack_require__(263);
+
+var _GetStudentInfo2 = _interopRequireDefault(_GetStudentInfo);
+
+var _axios = __webpack_require__(216);
+
+var _axios2 = _interopRequireDefault(_axios);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -27926,15 +27931,60 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var StudentsListBox = function (_React$Component) {
   _inherits(StudentsListBox, _React$Component);
 
-  function StudentsListBox() {
+  function StudentsListBox(props) {
     _classCallCheck(this, StudentsListBox);
 
-    return _possibleConstructorReturn(this, (StudentsListBox.__proto__ || Object.getPrototypeOf(StudentsListBox)).apply(this, arguments));
+    var _this = _possibleConstructorReturn(this, (StudentsListBox.__proto__ || Object.getPrototypeOf(StudentsListBox)).call(this, props));
+
+    _this.handleChange = function (e) {
+      e.preventDefault();
+      var showInfo = _this.state.showInfo;
+      console.log(e.target.value);
+      var studentInfo = 'https://qa.brainpop.com/devtest/api/students/' + e.target.value;
+      _this.setState(function (prevState) {
+        return {
+          showInfo: !prevState.showInfo,
+          popUp: !prevState.popUp
+        };
+      }, function () {
+        return _axios2.default.get(studentInfo).then(function (response) {
+          console.log("I am response data, hear me roar", response.data);
+          _this.setState({
+            studentInfo: [response.data]
+          });
+        }).catch(function (error) {
+          console.log('Error fetching and parsing data', error);
+        });
+      });
+    };
+
+    _this.state = {
+      showInfo: false,
+      studentInfo: [],
+      popUp: false
+    };
+    return _this;
   }
 
   _createClass(StudentsListBox, [{
+    key: 'displayStudentInfo',
+    value: function displayStudentInfo() {
+      return this.state.studentInfo.map(function (data, index) {
+        return _react2.default.createElement(
+          'div',
+          { key: index },
+          data.username
+        );
+      });
+    }
+    //need to pass student info to popup
+
+  }, {
     key: 'render',
     value: function render() {
+      console.log(this.state.showInfo);
+      console.log("I am the student info", this.state.studentInfo);
+      console.log(this.props);
       return _react2.default.createElement(
         'div',
         null,
@@ -27943,8 +27993,15 @@ var StudentsListBox = function (_React$Component) {
           null,
           this.props.first_name,
           ' ',
-          this.props.last_name
-        )
+          this.props.last_name,
+          ' ',
+          _react2.default.createElement(
+            'button',
+            { type: 'button', value: this.props.id, onClick: this.handleChange },
+            'Click Me '
+          )
+        ),
+        this.state.showInfo == true ? this.displayStudentInfo() : ""
       );
     }
   }]);
@@ -27953,6 +28010,79 @@ var StudentsListBox = function (_React$Component) {
 }(_react2.default.Component);
 
 exports.default = StudentsListBox;
+
+/***/ }),
+/* 263 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(6);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _axios = __webpack_require__(216);
+
+var _axios2 = _interopRequireDefault(_axios);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var GetStudentInfo = function (_React$Component) {
+  _inherits(GetStudentInfo, _React$Component);
+
+  function GetStudentInfo(props) {
+    _classCallCheck(this, GetStudentInfo);
+
+    var _this = _possibleConstructorReturn(this, (GetStudentInfo.__proto__ || Object.getPrototypeOf(GetStudentInfo)).call(this, props));
+
+    _this.handleShow = function (e) {
+      e.preventDefault();
+      var showInfo = _this.state.showInfo;
+      console.log(e.target);
+      _this.setState({
+        showInfo: !_this.state.showInfo
+      });
+      if (showInfo == true) {
+        console.log("i am true");
+      }
+    };
+
+    _this.state = {
+      showInfo: false
+    };
+    return _this;
+  }
+
+  _createClass(GetStudentInfo, [{
+    key: 'render',
+    value: function render() {
+      console.log(this.state.showInfo);
+      console.log("student props", this.props);
+      return _react2.default.createElement(
+        'button',
+        { type: 'button', onClick: this.handleShow },
+        'Click me!'
+      );
+    }
+  }]);
+
+  return GetStudentInfo;
+}(_react2.default.Component);
+
+exports.default = GetStudentInfo;
 
 /***/ })
 /******/ ]);

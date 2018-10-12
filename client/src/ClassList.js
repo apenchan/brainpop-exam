@@ -1,7 +1,7 @@
 import React from 'react';
 import ClassListBox from './ClassListBox';
 import StudentsList from './StudentsList';
-import axios from 'axios'
+import axios from 'axios';
 
 class ClassList extends React.Component {
   constructor(props) {
@@ -21,9 +21,6 @@ class ClassList extends React.Component {
         this.setState({
           students: response.data
         })
-        console.log(this.state)
-        // this.props.getStudents(response.data)
-        // this.setState({id: e.target.value});
       })
       .catch(error => {
         console.log('Error fetching and parsing data', error);
