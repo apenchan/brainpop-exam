@@ -1,5 +1,6 @@
 import React from 'react';
 import ClassList from './ClassList';
+import StudentsList from './StudentsList';
 import axios from 'axios';
 
 class DropdownBar extends React.Component{
@@ -28,7 +29,9 @@ class DropdownBar extends React.Component{
     console.log("I am the classes array", this.state.classes)
     return(
       <div className="dropdown-bar">
+        <form className="dropdown-form" >
         <ClassList classes={this.state.classes} />
+        </form>
       </div>
     )
   }
