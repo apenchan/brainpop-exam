@@ -11,8 +11,6 @@ class ClassList extends React.Component {
     }
   }
   handleChange = (e,data) => {
-    console.log(e.target)
-    console.log(e.target.value)
     let classes = this.props.classes
     let className = `https://qa.brainpop.com/devtest/api/classes/` + e.target.value + `/students`
     axios.get(className)
@@ -33,7 +31,6 @@ class ClassList extends React.Component {
   }
 
   render() {
-    console.log("rerender students", this.state.students)
     return (
       <div>
       <select onChange={this.handleChange}>{this.displayClass()}</select>

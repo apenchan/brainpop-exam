@@ -18,7 +18,6 @@ class DropdownBar extends React.Component{
     .then(response=>{
       console.log(response.data)
       currentComponent.setState({ classes: response.data })
-      console.log("current component state", currentComponent.state)
       return classesList;
       })
     .catch(error => {
@@ -26,7 +25,6 @@ class DropdownBar extends React.Component{
     });
   }
   render(){
-    console.log("I am the classes array", this.state.classes)
     return(
       <div className="dropdown-bar">
         <form className="dropdown-form" >

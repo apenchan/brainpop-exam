@@ -24777,7 +24777,6 @@ var DropdownBar = function (_React$Component) {
       _axios2.default.get(classesList).then(function (response) {
         console.log(response.data);
         currentComponent.setState({ classes: response.data });
-        console.log("current component state", currentComponent.state);
         return classesList;
       }).catch(function (error) {
         console.log('Error fetching and parsing data', error);
@@ -24786,7 +24785,6 @@ var DropdownBar = function (_React$Component) {
   }, {
     key: 'render',
     value: function render() {
-      console.log("I am the classes array", this.state.classes);
       return _react2.default.createElement(
         'div',
         { className: 'dropdown-bar' },
@@ -24850,8 +24848,6 @@ var ClassList = function (_React$Component) {
     var _this = _possibleConstructorReturn(this, (ClassList.__proto__ || Object.getPrototypeOf(ClassList)).call(this, props));
 
     _this.handleChange = function (e, data) {
-      console.log(e.target);
-      console.log(e.target.value);
       var classes = _this.props.classes;
       var className = 'https://qa.brainpop.com/devtest/api/classes/' + e.target.value + '/students';
       _axios2.default.get(className).then(function (response) {
@@ -24884,7 +24880,6 @@ var ClassList = function (_React$Component) {
   }, {
     key: 'render',
     value: function render() {
-      console.log("rerender students", this.state.students);
       return _react2.default.createElement(
         'div',
         null,
@@ -27854,6 +27849,10 @@ var _StudentsListBox = __webpack_require__(262);
 
 var _StudentsListBox2 = _interopRequireDefault(_StudentsListBox);
 
+var _Filtered = __webpack_require__(265);
+
+var _Filtered2 = _interopRequireDefault(_Filtered);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -27865,10 +27864,29 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var StudentsList = function (_React$Component) {
   _inherits(StudentsList, _React$Component);
 
-  function StudentsList() {
+  function StudentsList(props) {
     _classCallCheck(this, StudentsList);
 
-    return _possibleConstructorReturn(this, (StudentsList.__proto__ || Object.getPrototypeOf(StudentsList)).apply(this, arguments));
+    var _this = _possibleConstructorReturn(this, (StudentsList.__proto__ || Object.getPrototypeOf(StudentsList)).call(this, props));
+
+    _this.filterStudents = function (e) {
+      var filteredList = _this.props.students;
+      console.log("I am the filtered", filteredList);
+      filteredList = filteredList.filter(function (student) {
+        return student.last_name.toLowerCase().search(e.target.value.toLowerCase()) !== -1;
+      });
+      _this.setState({
+        filteredStudents: filteredList
+      });
+    };
+
+    _this.state = {
+      sortLastNames: false,
+      lastNames: [],
+      isShown: false,
+      filteredStudents: []
+    };
+    return _this;
   }
 
   _createClass(StudentsList, [{
@@ -27880,12 +27898,51 @@ var StudentsList = function (_React$Component) {
     }
   }, {
     key: 'render',
+
+    //NEED TO COME BACK TO===================================
+    //I need to sort here
+    //   sortStudents = () => {
+    //     let newArray = [...this.props.students]
+    //     let sortLastNames = this.state.sortLastNames;
+    //     let lastName;
+    //     let lastNames = this.state.lastNames
+    //     for (var i = 0; i < newArray.length; i++) {
+    //       lastName = newArray[i].last_name
+    //       lastNames.push(lastName)
+    //       lastNames.sort()
+    //       let newArray = 
+    //       console.log(lastNames.sort())
+    //     }
+    //     // return lastNames.map((params, index) => <StudentsListBox key={index} {...params} />)
+    //   }
+    //   compareObjects= (a,b) => {
+    //     let newArray= [...this.props.students]
+    //     console.log(newArray)
+    //     return b.lastName.localeCompare(a.lastName) ||
+    //     b.firstName.localeCompare(a.firstName) || 0
+    // }
+    //   handleSort = () => {
+    //     this.setState({
+    //       sortLastNames: true
+    //     })
+    //   }
+    //============================================================
     value: function render() {
-      console.log(this.props);
+      console.log(this.state.filteredStudents);
       return _react2.default.createElement(
-        'ul',
+        'div',
         null,
-        this.renderStudents()
+        _react2.default.createElement(
+          'div',
+          null,
+          _react2.default.createElement('input', { type: 'text', className: 'form-control form-control-lg', placeholder: 'Search', onChange: this.filterStudents })
+        ),
+        _react2.default.createElement(
+          'ul',
+          null,
+          this.state.sortLastNames == true ? this.sortStudents() : this.renderStudents()
+        ),
+        _react2.default.createElement(_Filtered2.default, { filteredStudents: this.state.filteredStudents, filterStudents: this.filterStudents })
       );
     }
   }]);
@@ -27916,6 +27973,10 @@ var _GetStudentInfo = __webpack_require__(263);
 
 var _GetStudentInfo2 = _interopRequireDefault(_GetStudentInfo);
 
+var _PopUp = __webpack_require__(264);
+
+var _PopUp2 = _interopRequireDefault(_PopUp);
+
 var _axios = __webpack_require__(216);
 
 var _axios2 = _interopRequireDefault(_axios);
@@ -27936,15 +27997,14 @@ var StudentsListBox = function (_React$Component) {
 
     var _this = _possibleConstructorReturn(this, (StudentsListBox.__proto__ || Object.getPrototypeOf(StudentsListBox)).call(this, props));
 
-    _this.handleChange = function (e) {
+    _this.onHover = function (e) {
       e.preventDefault();
       var showInfo = _this.state.showInfo;
       console.log(e.target.value);
       var studentInfo = 'https://qa.brainpop.com/devtest/api/students/' + e.target.value;
       _this.setState(function (prevState) {
         return {
-          showInfo: !prevState.showInfo,
-          popUp: !prevState.popUp
+          showInfo: !prevState.showInfo
         };
       }, function () {
         return _axios2.default.get(studentInfo).then(function (response) {
@@ -27958,50 +28018,43 @@ var StudentsListBox = function (_React$Component) {
       });
     };
 
+    _this.mouseLeave = function (e) {
+      e.preventDefault();
+      var showInfo = _this.state.showInfo;
+      _this.setState({
+        showInfo: false
+      });
+    };
+
     _this.state = {
       showInfo: false,
-      studentInfo: [],
-      popUp: false
+      studentInfo: []
     };
     return _this;
   }
 
   _createClass(StudentsListBox, [{
-    key: 'displayStudentInfo',
-    value: function displayStudentInfo() {
-      return this.state.studentInfo.map(function (data, index) {
-        return _react2.default.createElement(
-          'div',
-          { key: index },
-          data.username
-        );
-      });
-    }
-    //need to pass student info to popup
-
-  }, {
     key: 'render',
+
+    // sort names here
+    //need to pass student info to popup
     value: function render() {
-      console.log(this.state.showInfo);
-      console.log("I am the student info", this.state.studentInfo);
-      console.log(this.props);
       return _react2.default.createElement(
-        'div',
-        null,
+        'li',
+        { className: 'student-names' },
         _react2.default.createElement(
           'div',
           null,
           this.props.first_name,
           ' ',
           this.props.last_name,
-          ' ',
           _react2.default.createElement(
             'button',
-            { type: 'button', value: this.props.id, onClick: this.handleChange },
-            'Click Me '
+            { value: this.props.id, onMouseEnter: this.onHover, onMouseLeave: this.mouseLeave },
+            'hover me'
           )
         ),
-        this.state.showInfo == true ? this.displayStudentInfo() : ""
+        this.state.showInfo == true ? _react2.default.createElement(_PopUp2.default, { showInfo: this.state.showInfo, studentInfo: this.state.studentInfo, mouseLeave: this.mouseLeave }) : ""
       );
     }
   }]);
@@ -28083,6 +28136,158 @@ var GetStudentInfo = function (_React$Component) {
 }(_react2.default.Component);
 
 exports.default = GetStudentInfo;
+
+/***/ }),
+/* 264 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(6);
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var PopUp = function (_React$Component) {
+  _inherits(PopUp, _React$Component);
+
+  function PopUp() {
+    _classCallCheck(this, PopUp);
+
+    return _possibleConstructorReturn(this, (PopUp.__proto__ || Object.getPrototypeOf(PopUp)).apply(this, arguments));
+  }
+
+  _createClass(PopUp, [{
+    key: "displayStudentInfo",
+    value: function displayStudentInfo() {
+      return this.props.studentInfo.map(function (data, index) {
+        return _react2.default.createElement(
+          "div",
+          { key: index },
+          data.username
+        );
+      });
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      return _react2.default.createElement(
+        "div",
+        { className: "popup" },
+        _react2.default.createElement(
+          "div",
+          { className: "popup_inner" },
+          this.displayStudentInfo()
+        )
+      );
+    }
+  }]);
+
+  return PopUp;
+}(_react2.default.Component);
+
+exports.default = PopUp;
+
+/***/ }),
+/* 265 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(6);
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Filtered = function (_React$Component) {
+  _inherits(Filtered, _React$Component);
+
+  function Filtered(props) {
+    _classCallCheck(this, Filtered);
+
+    var _this = _possibleConstructorReturn(this, (Filtered.__proto__ || Object.getPrototypeOf(Filtered)).call(this, props));
+
+    _this.state = {
+      studentFilter: ''
+    };
+    return _this;
+  }
+  // filterStudents = () => {
+  //   // let filteredList = this.props.students
+  //   console.log("I am the filtered", filteredList)
+  //   filteredList = filteredList.filter(function(student){
+  //     return student.last_name.toLowerCase().search(
+  //       e.target.value.toLowerCase()) !== -1;
+  //   })
+  //   this.setState({
+  //     filteredStudents: filteredList
+  //   })
+  // }
+
+  // filterEvents(e) {
+  // 	var events = this.props.events
+  // 	events.forEach(function (event) {
+  // 		if (event.address.toLowerCase().startsWith(e.target.value.toLowerCase())) {
+  // 			event.isShown = true
+  // 		} else {
+  // 			event.isShown = false
+
+  // 		}
+  // 	})
+  // 	this.props.setEvents(events)
+  // }
+
+
+  _createClass(Filtered, [{
+    key: 'render',
+    value: function render() {
+      console.log(this.props);
+      return _react2.default.createElement(
+        'ul',
+        null,
+        this.props.filteredStudents.map(function (student) {
+          return _react2.default.createElement(
+            'li',
+            { key: student },
+            student.last_name
+          );
+        })
+      );
+    }
+  }]);
+
+  return Filtered;
+}(_react2.default.Component);
+
+exports.default = Filtered;
 
 /***/ })
 /******/ ]);
