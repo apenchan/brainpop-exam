@@ -14,7 +14,7 @@ class StudentsList extends React.Component {
     }
   }
   renderStudents() {
-    return this.props.students.map((params, index) => <StudentsListBox key={index} {...params} />)
+    return this.props.students.map((params, index) => <StudentsListBox key={index} {...params} search={this.state.search} filterStudents={this.filterStudents}/>)
   }
 
   // filteredStudents = () =>{
@@ -69,8 +69,6 @@ class StudentsList extends React.Component {
   //   }
   //============================================================
   render() {
-    console.log(this.state.filteredStudents)
-    console.log(this.props.students)
     let filteredStudent = this.props.students.filter(
       (student) =>{
         return student.last_name.indexOf(this.state.search) !== -1

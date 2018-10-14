@@ -6,6 +6,9 @@
 body, html{
   margin: 0px;
 }
+.exit-edit-info{
+  float: right;
+}
 .main-title{
   text-align: center;
   font-family: "GeosansLight.ttf";

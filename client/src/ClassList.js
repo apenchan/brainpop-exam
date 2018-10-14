@@ -12,9 +12,22 @@ class ClassList extends React.Component {
     }
   }
   handleChange = (e,data) => {
-    let classes = this.props.classes
+    let classes = this.props.classes;
     let className = `https://qa.brainpop.com/devtest/api/classes/` + e.target.value + `/students`
+    let xhr = new XMLHttpRequest();
+    xhr.open('GET', className, true);
+    xhr.withCredentials = true;
+    xhr.send(null)
     axios.get(className)
+
+    // axios.get(className ,{
+    //   credentials: 'include',
+    // // })
+    //   headers:{
+    //   'Cache-Control': 'no-cache',
+    //   "Access-Control-Allow-Origin": "*",
+    //   }
+    // })
       .then(response => {
         console.log(response.data)
         this.setState({
