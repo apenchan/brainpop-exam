@@ -4,41 +4,48 @@ class Filtered extends React.Component{
   constructor(props){
     super(props);
     this.state ={
-      studentFilter: ''
+      search: ''
     }
   }
-  // filterStudents = () => {
-  //   // let filteredList = this.props.students
-  //   console.log("I am the filtered", filteredList)
-  //   filteredList = filteredList.filter(function(student){
+  // filterStudents = (e) => {
+  //   let filteredList = this.props.students
+  //   console.log(e.target.value)
+  //   filteredList = filteredList.filter(function (student) {
   //     return student.last_name.toLowerCase().search(
   //       e.target.value.toLowerCase()) !== -1;
   //   })
+  //   if (!e.target.value) {
+  //     return " "
+  //     this.setState({
+  //       filtered: false
+  //     })
+  //     console.log(this.state.filtered)
+  //   }
   //   this.setState({
+  //     search: e.target.value,
+  //     filtered: true,
   //     filteredStudents: filteredList
   //   })
   // }
-
-  // filterEvents(e) {
-	// 	var events = this.props.events
-	// 	events.forEach(function (event) {
-	// 		if (event.address.toLowerCase().startsWith(e.target.value.toLowerCase())) {
-	// 			event.isShown = true
-	// 		} else {
-	// 			event.isShown = false
-
-	// 		}
-	// 	})
-	// 	this.props.setEvents(events)
-	// }
   render(){
     console.log(this.props)
+    // let filteredStudent = this.props.filteredStudents.filter(
+    //   (student) =>{
+    //     return student.last_name.indexOf(this.props.search) !== -1
+    //   }
+    // );
     return(
+      <div>
+        {/* <input type="text" value={this.props.search} placeholder="Search Last Name" onChange={this.props.filterStudents} />  */}
       <ul>
-        {this.props.filteredStudents.map(function(student){
-          return <li key={student}>{student.last_name}</li>
-        })}
+        {this.props.search != "" ? this.props.filteredStudents.map(function(student){
+          return <li data-category={student} key={student}>{student.last_name}</li>
+        }): ""}
+        {/* {this.props.filteredStudents.map(function(student){
+          return <li data-category={student} key={student}>{student.last_name}</li>
+        })} */}
       </ul>
+      </div>
     )
   }
 }

@@ -7,7 +7,8 @@ class ClassList extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      students: []
+      students: [], 
+      search: ''
     }
   }
   handleChange = (e,data) => {
@@ -26,13 +27,13 @@ class ClassList extends React.Component {
   }
   displayClass() {
     return this.props.classes.map((data, index) => {
-      return <option value={data.id} key={index}>{data.name}</option>
+      return <option placeholder="Select"value={data.id} key={index}>{data.name}</option>
     })
   }
-
   render() {
+    console.log(this.state.students)
     return (
-      <div>
+      <div className="class-list">
       <select onChange={this.handleChange}>{this.displayClass()}</select>
       <div><StudentsList students={this.state.students}/></div>
       </div>

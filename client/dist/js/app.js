@@ -24700,13 +24700,17 @@ var Homepage = function (_React$Component) {
     value: function render() {
       return _react2.default.createElement(
         'div',
-        null,
+        { className: 'main-container' },
         _react2.default.createElement(
           'h1',
-          null,
-          'Brainpop Yooooo'
+          { className: 'main-title' },
+          'BrainPOP Exam'
         ),
-        _react2.default.createElement(_DropdownBar2.default, null)
+        _react2.default.createElement(
+          'div',
+          { className: 'app-container' },
+          _react2.default.createElement(_DropdownBar2.default, null)
+        )
       );
     }
   }]);
@@ -24861,7 +24865,8 @@ var ClassList = function (_React$Component) {
     };
 
     _this.state = {
-      students: []
+      students: [],
+      search: ''
     };
     return _this;
   }
@@ -24872,7 +24877,7 @@ var ClassList = function (_React$Component) {
       return this.props.classes.map(function (data, index) {
         return _react2.default.createElement(
           'option',
-          { value: data.id, key: index },
+          { placeholder: 'Select', value: data.id, key: index },
           data.name
         );
       });
@@ -24880,9 +24885,10 @@ var ClassList = function (_React$Component) {
   }, {
     key: 'render',
     value: function render() {
+      console.log(this.state.students);
       return _react2.default.createElement(
         'div',
-        null,
+        { className: 'class-list' },
         _react2.default.createElement(
           'select',
           { onChange: this.handleChange },
@@ -27871,11 +27877,16 @@ var StudentsList = function (_React$Component) {
 
     _this.filterStudents = function (e) {
       var filteredList = _this.props.students;
-      console.log("I am the filtered", filteredList);
+      console.log(e.target.value);
       filteredList = filteredList.filter(function (student) {
         return student.last_name.toLowerCase().search(e.target.value.toLowerCase()) !== -1;
       });
+      if (!e.target.value.length < 0) {
+        return " ";
+      }
       _this.setState({
+        search: e.target.value,
+        // filtered: true,
         filteredStudents: filteredList
       });
     };
@@ -27884,7 +27895,8 @@ var StudentsList = function (_React$Component) {
       sortLastNames: false,
       lastNames: [],
       isShown: false,
-      filteredStudents: []
+      filteredStudents: [],
+      search: ''
     };
     return _this;
   }
@@ -27896,6 +27908,14 @@ var StudentsList = function (_React$Component) {
         return _react2.default.createElement(_StudentsListBox2.default, _extends({ key: index }, params));
       });
     }
+
+    // filteredStudents = () =>{
+    //   this.setState({
+    //     search: e.target.value,
+    //     filteredStudents: this.props.students
+    //   })
+    // }
+
   }, {
     key: 'render',
 
@@ -27928,21 +27948,23 @@ var StudentsList = function (_React$Component) {
     //   }
     //============================================================
     value: function render() {
+      var _this2 = this;
+
       console.log(this.state.filteredStudents);
+      console.log(this.props.students);
+      var filteredStudent = this.props.students.filter(function (student) {
+        return student.last_name.indexOf(_this2.state.search) !== -1;
+      });
       return _react2.default.createElement(
         'div',
         null,
-        _react2.default.createElement(
-          'div',
-          null,
-          _react2.default.createElement('input', { type: 'text', className: 'form-control form-control-lg', placeholder: 'Search', onChange: this.filterStudents })
-        ),
+        this.props.students.length > 1 ? _react2.default.createElement('input', { type: 'text', value: this.state.search, placeholder: 'Search Last Name', onChange: this.filterStudents }) : "",
         _react2.default.createElement(
           'ul',
           null,
           this.state.sortLastNames == true ? this.sortStudents() : this.renderStudents()
         ),
-        _react2.default.createElement(_Filtered2.default, { filteredStudents: this.state.filteredStudents, filterStudents: this.filterStudents })
+        _react2.default.createElement(_Filtered2.default, { search: this.state.search, filterStudents: this.filterStudents, filteredStudents: this.state.filteredStudents })
       );
     }
   }]);
@@ -28000,7 +28022,7 @@ var StudentsListBox = function (_React$Component) {
     _this.onHover = function (e) {
       e.preventDefault();
       var showInfo = _this.state.showInfo;
-      console.log(e.target.value);
+      // console.log(e.target.value)
       var studentInfo = 'https://qa.brainpop.com/devtest/api/students/' + e.target.value;
       _this.setState(function (prevState) {
         return {
@@ -28008,7 +28030,7 @@ var StudentsListBox = function (_React$Component) {
         };
       }, function () {
         return _axios2.default.get(studentInfo).then(function (response) {
-          console.log("I am response data, hear me roar", response.data);
+          // console.log("I am response data, hear me roar", response.data)
           _this.setState({
             studentInfo: [response.data]
           });
@@ -28176,9 +28198,23 @@ var PopUp = function (_React$Component) {
     value: function displayStudentInfo() {
       return this.props.studentInfo.map(function (data, index) {
         return _react2.default.createElement(
-          "div",
+          "ul",
           { key: index },
-          data.username
+          _react2.default.createElement(
+            "li",
+            null,
+            data.username
+          ),
+          _react2.default.createElement(
+            "li",
+            null,
+            data.last_name
+          ),
+          _react2.default.createElement(
+            "li",
+            null,
+            data.first_name
+          )
         );
       });
     }
@@ -28236,33 +28272,29 @@ var Filtered = function (_React$Component) {
     var _this = _possibleConstructorReturn(this, (Filtered.__proto__ || Object.getPrototypeOf(Filtered)).call(this, props));
 
     _this.state = {
-      studentFilter: ''
+      search: ''
     };
     return _this;
   }
-  // filterStudents = () => {
-  //   // let filteredList = this.props.students
-  //   console.log("I am the filtered", filteredList)
-  //   filteredList = filteredList.filter(function(student){
+  // filterStudents = (e) => {
+  //   let filteredList = this.props.students
+  //   console.log(e.target.value)
+  //   filteredList = filteredList.filter(function (student) {
   //     return student.last_name.toLowerCase().search(
   //       e.target.value.toLowerCase()) !== -1;
   //   })
+  //   if (!e.target.value) {
+  //     return " "
+  //     this.setState({
+  //       filtered: false
+  //     })
+  //     console.log(this.state.filtered)
+  //   }
   //   this.setState({
+  //     search: e.target.value,
+  //     filtered: true,
   //     filteredStudents: filteredList
   //   })
-  // }
-
-  // filterEvents(e) {
-  // 	var events = this.props.events
-  // 	events.forEach(function (event) {
-  // 		if (event.address.toLowerCase().startsWith(e.target.value.toLowerCase())) {
-  // 			event.isShown = true
-  // 		} else {
-  // 			event.isShown = false
-
-  // 		}
-  // 	})
-  // 	this.props.setEvents(events)
   // }
 
 
@@ -28270,16 +28302,25 @@ var Filtered = function (_React$Component) {
     key: 'render',
     value: function render() {
       console.log(this.props);
+      // let filteredStudent = this.props.filteredStudents.filter(
+      //   (student) =>{
+      //     return student.last_name.indexOf(this.props.search) !== -1
+      //   }
+      // );
       return _react2.default.createElement(
-        'ul',
+        'div',
         null,
-        this.props.filteredStudents.map(function (student) {
-          return _react2.default.createElement(
-            'li',
-            { key: student },
-            student.last_name
-          );
-        })
+        _react2.default.createElement(
+          'ul',
+          null,
+          this.props.search != "" ? this.props.filteredStudents.map(function (student) {
+            return _react2.default.createElement(
+              'li',
+              { 'data-category': student, key: student },
+              student.last_name
+            );
+          }) : ""
+        )
       );
     }
   }]);

@@ -14,13 +14,13 @@ class StudentsListBox extends React.Component {
   onHover = (e) => {
     e.preventDefault();
     let showInfo = this.state.showInfo;
-    console.log(e.target.value)
+    // console.log(e.target.value)
     let studentInfo = `https://qa.brainpop.com/devtest/api/students/` + e.target.value
     this.setState(prevState => ({
       showInfo: !prevState.showInfo
     }), () => axios.get(studentInfo)
       .then(response => {
-        console.log("I am response data, hear me roar", response.data)
+        // console.log("I am response data, hear me roar", response.data)
         this.setState({
           studentInfo: [response.data]
         })

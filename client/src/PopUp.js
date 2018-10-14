@@ -3,7 +3,7 @@ import React from 'react';
 class PopUp extends React.Component {
   displayStudentInfo() {
     return this.props.studentInfo.map((data, index) => {
-      return <div key={index}>{data.username}</div>
+      return <ul key={index}><li>{data.username}</li><li>{data.last_name}</li><li>{data.first_name}</li></ul>
     })
   }
   render() {

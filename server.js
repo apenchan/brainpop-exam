@@ -4,6 +4,7 @@ const app = express();
 
 app.use(express.static('./server/static/'));
 app.use(express.static('./client/dist/'));
+app.use(express.static('./server'));
 
 //Handle browser refresh by redirecting to index html
 app.get('/*', (req, res) => {

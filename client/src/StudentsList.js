@@ -9,21 +9,34 @@ class StudentsList extends React.Component {
       sortLastNames: false,
       lastNames: [],
       isShown: false,
-      filteredStudents: []
+      filteredStudents: [],
+      search: ''
     }
   }
   renderStudents() {
     return this.props.students.map((params, index) => <StudentsListBox key={index} {...params} />)
   }
 
+  // filteredStudents = () =>{
+  //   this.setState({
+  //     search: e.target.value,
+  //     filteredStudents: this.props.students
+  //   })
+  // }
+
   filterStudents = (e) => {
     let filteredList = this.props.students
-    console.log("I am the filtered", filteredList)
-    filteredList = filteredList.filter(function(student){
+    console.log(e.target.value)
+    filteredList = filteredList.filter(function (student) {
       return student.last_name.toLowerCase().search(
         e.target.value.toLowerCase()) !== -1;
     })
+    if (!e.target.value.length < 0) {
+      return " "
+    }
     this.setState({
+      search: e.target.value,
+      // filtered: true,
       filteredStudents: filteredList
     })
   }
@@ -57,14 +70,20 @@ class StudentsList extends React.Component {
   //============================================================
   render() {
     console.log(this.state.filteredStudents)
+    console.log(this.props.students)
+    let filteredStudent = this.props.students.filter(
+      (student) =>{
+        return student.last_name.indexOf(this.state.search) !== -1
+      }
+    );
     return (
       <div>
-        <div><input type="text" className="form-control form-control-lg" placeholder="Search" onChange={this.filterStudents} /></div>
+        {this.props.students.length > 1 ? <input type="text" value={this.state.search} placeholder="Search Last Name" onChange={this.filterStudents} /> : ""}
         {/* //   {this.props.students ? <button type="button" onClick={this.handleSort}>Sort by Last Name</button> : ""} */}
-        <ul>
+        <ul> 
           {this.state.sortLastNames == true ? this.sortStudents() : this.renderStudents()}
         </ul>
-        <Filtered filteredStudents={this.state.filteredStudents} filterStudents={this.filterStudents}/>
+        <Filtered search={this.state.search} filterStudents={this.filterStudents} filteredStudents={this.state.filteredStudents}/>
       </div>
     )
   }

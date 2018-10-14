@@ -1,5 +1,17 @@
+@font-face{
+  font-family: "GeosansLight.ttf";
+  src: url(../fonts/GeosansLight.ttf);
+}
+
 body, html{
   margin: 0px;
+}
+.main-title{
+  text-align: center;
+  font-family: "GeosansLight.ttf";
+}
+.app-container{
+  padding-left: 20px;
 }
 .popup {
   /* position: fixed; */
